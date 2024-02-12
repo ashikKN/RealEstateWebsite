@@ -1,0 +1,37 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url = env("DATABASE_URL")
+}
+
+// define your data model in the Prisma schema file. This schema defines your database collections, their fields, relationships, and constraints.
+
+model User {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    name String?
+    email String @unique
+    image String?
+    bookedVisits Json[]
+    favResidenciesID String[]
+    ownedResidencies Residency[] @relation("Owner")
+}
+
+model Residency {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    title String
+    description String
+    price Int
+    address String
+    city String
+    country String
+    image String
+    facilities Json
+    userEmail String
+    owner User @relation("Owner", fields: [userEmail],references:[email])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
